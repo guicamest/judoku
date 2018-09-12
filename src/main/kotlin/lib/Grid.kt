@@ -312,43 +312,41 @@ class Grid {
 
 		for (y in 0..numBands * (boxHeight + 1)) {
 			for (x in 0..numStacks * (boxWidth + 1)) {
-				var s: String
-
-				if (y == 0) {										// first horizontal line
+				val s: String = if (y == 0) {										// first horizontal line
 					if (x == 0)
-						s = faint + "┌"
+						faint + "┌"
 					else if (x == numStacks * (boxWidth + 1))
-						s = "┐" + reset
+						"┐" + reset
 					else if (x % (boxWidth + 1) == 0)
-						s = "┬"
+						"┬"
 					else
-						s = "───"
+						"───"
 				} else if (y == numBands * (boxHeight + 1)) {		// last horizontal line
 					if (x == 0)
-						s = faint + "└"
+						faint + "└"
 					else if (x == numStacks * (boxWidth + 1))
-						s = "┘" + reset
+						"┘" + reset
 					else if (x % (boxWidth + 1) == 0)
-						s = "┴"
+						"┴"
 					else
-						s = "───"
+						"───"
 				} else if (y % (boxHeight + 1) == 0) {				// middle horizontal line
 					if (x == 0)
-						s = faint + "├"
+						faint + "├"
 					else if (x == numStacks * (boxWidth + 1))
-						s = "┤" + reset
+						"┤" + reset
 					else if (x % (boxWidth + 1) == 0)
-						s = "┼"
+						"┼"
 					else
-						s = "───"
+						"───"
 				} else if (x % (boxWidth + 1) == 0)
-					s = faint + "|" + reset
+					faint + "|" + reset
 				else {
 					check(row <= numRows)
 					check(col <= numColumns)
 
 					val cell = getCell(col, row)
-					s = when {
+					var tmpS = when {
 						cell == EMPTY -> " "
 						size > 9 && size <= 26 -> (('A'.toInt() - 1 + cell).toChar()).toString()
 						else -> Integer.toString(cell)
@@ -357,10 +355,11 @@ class Grid {
 					var left = " "
 					var right = " "
 					if (toNth(col, row) == highlightNthCell) { left = "["; right = "]" }
-					if (s.length < 3) s = s + right
-					if (s.length < 3) s = left + s
+					if (tmpS.length < 3) tmpS = tmpS + right
+					if (tmpS.length < 3) tmpS = left + tmpS
 
 					if (++col > numColumns) { col = 1; ++row }
+					tmpS
 				}
 
 				result.append(s)
@@ -399,6 +398,7 @@ class Grid {
 
 		// TODO Check appropriate LazyThreadSafetyMode to use (lazy(mode: LazyThreadSafetyMode){}).
 		// SYNCHRONIZED on this laziness
+		// More info: https://kotlinlang.org/docs/reference/delegated-properties.html#lazy
 		private val gsonInstance: Gson by lazy {
 
 				val serializer = object : JsonSerializer<Grid> {
