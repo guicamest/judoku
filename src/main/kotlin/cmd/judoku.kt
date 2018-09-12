@@ -11,9 +11,7 @@ fun main(args: Array<String>) {
 
     if (jsonFile != null && grid != null)
         try {
-            val writer = FileWriter(jsonFile)
-            grid.toJson(writer)
-            writer.close()
+            FileWriter(jsonFile).use { grid.toJson(it) }
         } catch (e: IOException) {
             syserrln("judoku: Unable to write to file: ${e.message}")
             exitProcess(1)
@@ -21,9 +19,7 @@ fun main(args: Array<String>) {
 
     if (csvFile != null && grid != null)
         try {
-            val writer = FileWriter(csvFile)
-            grid.toCsv(writer)
-            writer.close()
+            FileWriter(csvFile).use { grid.toCsv(it) }
         } catch (e: IOException) {
             syserrln("judoku: Unable to write to file: ${e.message}")
             exitProcess(1)
@@ -402,7 +398,7 @@ private fun solveTestGrids(testGrids: Array<Grid>, iterations: Int): Double {
 }
 
 private fun readGrid(file: String): Grid = try {
-    Grid.newFromJson(FileReader(file))
+    FileReader(file).use { Grid.newFromJson(it) }
 } catch (e: IOException) {
     syserrln("judoku: Cannot read file: $file")
     exitProcess(1)
