@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: judoku
-Implementation-Version: 2.0
-Implementation-Vendor: Copyright 2018 Steve Ball <jetpants@gmail.com>
-Main-Class: cmd.JudokuKt
-
