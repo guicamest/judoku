@@ -397,12 +397,9 @@ class Grid {
 		@Throws(JsonParseException::class)
 		fun newFromJson(from: Reader): Grid = gsonInstance.fromJson(from, Grid::class.java)
 
-		private var _gson: Gson? = null					// lazy init
-		private val gsonInstance: Gson
-			get() {
-				// !! is because compiler warns that _gson may have been set to null by
-				// another thread in between testing it and returning it
-				if (_gson != null) return _gson!!
+		// TODO Check appropriate LazyThreadSafetyMode to use (lazy(mode: LazyThreadSafetyMode){}).
+		// SYNCHRONIZED on this laziness
+		private val gsonInstance: Gson by lazy {
 
 				val serializer = object : JsonSerializer<Grid> {
 					override fun serialize(g: Grid, typeOfT: Type,
@@ -451,14 +448,11 @@ class Grid {
 					}
 				}
 
-				_gson = GsonBuilder()
+				GsonBuilder()
 					.registerTypeAdapter(Grid::class.java, serializer)
 					.registerTypeAdapter(Grid::class.java, deserializer)
 					.setPrettyPrinting()
 					.create()
-
-				check(_gson != null) { "GsonBuilder.create() returned null" }
-				return _gson!!
 			}
 	}
 }
