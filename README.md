@@ -27,9 +27,8 @@ The JVM sets the gold standard for virtual machine efficiency and that's been th
 
 ## Running the command-line utilities
 
-If you're using Linux or a Mac, then in the `./bin` directory there's a bash script that invokes the JAR in the right way (and a matching batch script for Windows):
 ```
-~/Code/judoku> bin/judoku -c -n9
+~/Code/judoku> ./gradlew run --args="-c -n9"
 ┌─────────┬─────────┬─────────┐
 |       5 |    8    |    6  2 |
 |         |         |    3  7 |
@@ -44,7 +43,7 @@ If you're using Linux or a Mac, then in the `./bin` directory there's a bash scr
 | 1  9    |    4    | 8       |
 └─────────┴─────────┴─────────┘
 
-~/Code/judoku> bin/judoku -c -b 5x2
+~/Code/judoku> ./gradlew run --args="-c -b 5x2"
 ┌───────────────┬───────────────┐
 |       D       |               |
 | E  F     H    |    I  J       |
@@ -64,7 +63,7 @@ If you're using Linux or a Mac, then in the `./bin` directory there's a bash scr
 ```
 There are a lot of options for creating, solving, saving and viewing stored grids. Use the `-h` help option to see them all:
 ```
-~/Code/judoku> bin/judoku -h
+~/Code/judoku> ./gradlew run --args="-h"
 judoku -crspV [OPTION...] [FILE]
 
 First option must be a mode specifier:
@@ -109,17 +108,10 @@ Examples:
 
 ## Building and installing
 
-To build the project, you will need to download two libraries:
+The project is built using Gradle.
+To get a tar/zip containing all dependencies and scripts run either `./gradlew distTar` or `./gradlew distZip`.
+Files can be located at `./build/distributions`
 
-+ gson-2.2.2.jar https://search.maven.org/artifact/com.google.code.gson/gson/2.2.2/jar
-+ commons-cli-1.4.jar https://search.maven.org/artifact/commons-cli/commons-cli/1.4/jar
-
-The project is built using Gradle and has build scripts for Linux/MacOS and Windows.
-
-I recommend downloading the libraries manually and installing them under some local libraries directory. As a Mac user, I placed them under `/Library/Java` and then placed the libraries in my classpath (which I set in my `~/.bashrc`):
-
-```
-export CLASSPATH=.
-CLASSPATH=$CLASSPATH:/Library/Java/gson-2.2.2/gson-2.2.2.jar
-CLASSPATH=$CLASSPATH:/Library/Java/commons-cli-1.4/commons-cli-1.4.jar
-```
+If you don't like running the app using `./gradlew run`, you can run `./gradlew installDist`.
+This will copy startup scripts to `./bin` and dependencies to `./lib`. After this, you can just
+run the app by typing `./bin/judoku` or `./bin/judoku.bat` if you are on Windows.

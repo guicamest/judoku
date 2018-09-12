@@ -19,16 +19,24 @@ buildscript {
     }
 }
 
-apply plugin: "kotlin"
+apply plugin: 'kotlin'
 apply plugin: 'java'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'com.kncept.junit5.reporter'
+// More info @ https://docs.gradle.org/current/userguide/application_plugin.html
+// See also: https://docs.gradle.org/current/userguide/distribution_plugin.html
+apply plugin: 'application'
 
 compileKotlin {
     kotlinOptions {
         includeRuntime = true
         noStdlib = false
     }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -52,30 +60,24 @@ test {
     useJUnitPlatform()
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-}
+// For application plugin
+mainClassName = 'cmd.JudokuKt'
 
 jar {
     manifest {
         attributes 'Implementation-Title': project.name,
             'Implementation-Version': project.version,
             'Implementation-Vendor': 'Copyright 2018 Steve Ball <jetpants@gmail.com>',
-            'Main-Class': 'cmd.JudokuKt'
+            'Main-Class': mainClassName
     }
+}
 
-    from {
-        String[] include = [
-            "kotlin-runtime-${kotlin_version}.jar",
-            "kotlin-stdlib-${kotlin_version}.jar",
-	    "gson-2.2.2.jar"
-        ]
-
-        configurations.compile
-            .findAll { include.contains(it.name) }
-            .collect { it.isDirectory() ? it : zipTree(it) }
+afterEvaluate {
+    tasks['installDist'].doLast {
+        def taskOutput = outputs
+        copy {
+            from taskOutput
+            into projectDir
+        }
     }
 }
